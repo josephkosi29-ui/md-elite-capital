@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MD Elite Capital — Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A0602;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;padding:20px}
+.card{background:#120C04;border:1px solid rgba(255,107,0,0.3);padding:40px;width:100%;max-width:400px}
+h1{color:#FF6B00;font-size:24px;margin-bottom:8px;text-align:center}
+.sub{color:#8a6318;font-size:12px;text-align:center;margin-bottom:28px}
+label{display:block;font-size:11px;color:rgba(255,165,0,0.6);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+input{width:100%;background:rgba(255,107,0,0.05);border:1px solid rgba(255,107,0,0.2);color:#FFE8CC;font-size:15px;padding:12px;outline:none;margin-bottom:16px}
+input:focus{border-color:#FF6B00}
+button{width:100%;background:#FF6B00;color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px;border:none;cursor:pointer;margin-top:4px}
+.err{color:#FF3B30;font-size:13px;margin-bottom:12px;display:none;padding:10px;background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2)}
+.err.show{display:block}
+.link{text-align:center;margin-top:20px;font-size:13px;color:#8a6318}
+.link a{color:#FF6B00;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+<div style="text-align:center;font-size:48px;margin-bottom:12px">🐋</div>
+<h1>MD Elite Capital</h1>
+<div class="sub">Sign in to your trader account</div>
+<div class="err" id="err"></div>
+<label>Email Address</label>
+<input type="email" id="email" placeholder="your@gmail.com">
+<label>Password</label>
+<input type="password" id="pass" placeholder="Your password" onkeydown="if(event.key==='Enter')login()">
+<button onclick="login()">Sign In →</button>
+<div class="link">No account? <a href="/">Join for ₦10,000 →</a></div>
+</div>
+<script>
+async function login(){
+const email=document.getElementById('email').value.trim();
+const pass=document.getElementById('pass').value;
+const err=document.getElementById('err');
+if(!email||!pass){err.textContent='Please enter email and password';err.classList.add('show');return}
+try{
+const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+const data=await res.json();
+if(!res.ok)throw new Error(data.error||'Login failed');
+localStorage.setItem('md_token',data.token);
+window.location.href='/dashboard';
+}catch(e){err.textContent=e.message;err.classList.add('show')}
+}
+if(localStorage.getItem('md_token'))window.location.href='/dashboard';
+</script>
+</body>
+  </html>
