@@ -1,0 +1,7 @@
+app.get('/setup-admin',async(req,res)=>{
+const existing=db.prepare('SELECT id FROM users WHERE email=?').get('kosisochukwujoseph41@gmail.com');
+if(existing){return res.json({message:'Admin already exists. Go to /login'});}
+const hash=await bcrypt.hash('MarketDynamics2025!',12);
+db.prepare('INSERT INTO users(name,email,password_hash,role)VALUES(?,?,?,?)').run('Big Fezi Admin','kosisochukwujoseph41@gmail.com',hash,'admin');
+res.json({success:true,message:'Admin created! Go to /login now.',email:'kosisochukwujoseph41@gmail.com',password:'MarketDynamics2025!'});
+});
